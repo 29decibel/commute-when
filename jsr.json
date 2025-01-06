@@ -1,7 +1,10 @@
 {
   "name": "@29decibel/commute-when",
   "description": "A simple CLI to calculate the best time to commute",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
-  "exports": "./index.ts"
+  "exports": "./index.ts",
+  "bin": {
+    "commute-when": "./index.ts"
+  }
 }
