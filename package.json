@@ -1,6 +1,6 @@
 {
   "name": "@29decibel/commute-when",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "exports": "./index.ts",
   "description": "Find the best time to leave for your commute",
