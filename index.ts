@@ -129,7 +129,7 @@ export async function getDirections(
   origin: string,
   destination: string,
   departureTime: string | number = DEPARTURE_TIME,
-) {
+): Promise<any> {
   try {
     const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
     url.searchParams.append("origin", origin);
@@ -181,7 +181,7 @@ export async function getDirections(
 }
 
 // Enhanced bar chart with better styling
-function createBarChart(trips: any[], title: string) {
+function createBarChart(trips: any[], title: string): void {
   if (trips.length === 0) return;
 
   const maxDuration = Math.max(...trips.map((t) => t.totalMinutes));
@@ -249,7 +249,7 @@ async function findBestTimes(
   endHour: number,
   direction: string,
   analysisDate: Date = new Date(),
-) {
+): Promise<void> {
   const trips = [];
   const today = new Date(analysisDate);
   today.setDate(today.getDate() + 1);
@@ -304,32 +304,6 @@ async function findBestTimes(
   }
 
   createBarChart(trips, `=== ${direction} ===`);
-}
-async function analyzeCommute(origin: string, destination: string) {
-  console.clear(); // Clear the console at the start
-  console.log(chalk.bold.blue("Traffic Analysis for Your Commute\n"));
-
-  try {
-    await findBestTimes(
-      origin,
-      destination,
-      6,
-      10,
-      "Morning Commute (To Work)",
-    );
-
-    await findBestTimes(
-      destination,
-      origin,
-      13,
-      19,
-      "Afternoon Commute (To Home)",
-    );
-
-    console.log(chalk.gray("\nAnalysis complete! ✨"));
-  } catch (error) {
-    console.error(chalk.red("Failed to analyze commute times:", error));
-  }
 }
 
 // Modify the main function to handle date options
