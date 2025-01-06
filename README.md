@@ -16,7 +16,19 @@ export GOOGLE_MAPS_API_KEY=<your-api-key>
 
 ```bash
 # commute-when <origin> <destination>
-commute-when "123 Main St, Anytown, USA" "456 Elm St, Anytown, USA"
+# Today's commute
+commute-when "4512 Sandburg Way, Irvine, CA" "4077 Ince Blvd, Culver City, CA 90232"
+
+# Tomorrow's commute
+commute-when "4512 Sandburg Way, Irvine, CA" "4077 Ince Blvd, Culver City, CA 90232" --tomorrow
+
+# Or any next day
+commute-when "4512 Sandburg Way, Irvine, CA" "4077 Ince Blvd, Culver City, CA 90232" --next-wednesday
+
+# Once run with origin and destination, they will be saved in the config file at ~/.config/commute.json
+# So you can just run `commute-when` without any arguments to get the commute time of today
+commute-when
+
 ```
 
 ## Development
@@ -28,5 +40,5 @@ bun install
 To run:
 
 ```bash
-bun run index.ts
+bun index.ts
 ```

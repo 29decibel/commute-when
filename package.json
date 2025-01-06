@@ -3,6 +3,9 @@
   "description": "Find the best time to leave for your commute",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "build": "bun build ./index.ts --compile --outfile ./bin/commute-when"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -11,6 +14,7 @@
   },
   "dependencies": {
     "chalk": "^5.4.1",
+    "commander": "^13.0.0",
     "dotenv": "^16.4.7",
     "ora": "^8.1.1"
   }

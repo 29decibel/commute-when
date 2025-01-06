@@ -4,6 +4,7 @@ import chalk from "chalk";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
+import { Command } from "commander";
 
 dotenv.config();
 
@@ -17,6 +18,46 @@ if (!GOOGLE_MAPS_API_KEY) {
 interface CommuteConfig {
   origin: string;
   destination: string;
+}
+
+// Add these interfaces and types
+interface DateOption {
+  date: Date;
+  description: string;
+}
+
+type DayOfWeek =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+// Add this function to calculate next occurrence of a day
+function getNextDayOfWeek(dayName: DayOfWeek): Date {
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  const today = new Date();
+  const targetDay = days.indexOf(dayName);
+  const todayDay = today.getDay();
+
+  let daysUntilTarget = targetDay - todayDay;
+  if (daysUntilTarget <= 0) {
+    daysUntilTarget += 7;
+  }
+
+  const nextDate = new Date();
+  nextDate.setDate(today.getDate() + daysUntilTarget);
+  return nextDate;
 }
 
 async function getConfig(): Promise<CommuteConfig | null> {
@@ -207,9 +248,10 @@ async function findBestTimes(
   startHour: number,
   endHour: number,
   direction: string,
+  analysisDate: Date = new Date(),
 ) {
   const trips = [];
-  const today = new Date();
+  const today = new Date(analysisDate);
   today.setDate(today.getDate() + 1);
   today.setHours(startHour, 30, 0, 0);
   const endTime = new Date(today);
@@ -290,10 +332,105 @@ async function analyzeCommute(origin: string, destination: string) {
   }
 }
 
+// Modify the main function to handle date options
 async function main() {
+  const program = new Command();
+
+  program
+    .name("commute-when")
+    .description("Analyze commute times for different days")
+    .argument("[origin]", "Starting location")
+    .argument("[destination]", "Destination location")
+    .option("--today", "Analyze commute for today")
+    .option("--tomorrow", "Analyze commute for tomorrow")
+    .option("--next-monday", "Analyze commute for next Monday")
+    .option("--next-tuesday", "Analyze commute for next Tuesday")
+    .option("--next-wednesday", "Analyze commute for next Wednesday")
+    .option("--next-thursday", "Analyze commute for next Thursday")
+    .option("--next-friday", "Analyze commute for next Friday")
+    .option("--next-saturday", "Analyze commute for next Saturday")
+    .option("--next-sunday", "Analyze commute for next Sunday");
+
+  program.parse();
+
+  const options = program.opts();
+  const args = program.args;
+
   try {
-    const locations = await getCommuteLocations();
-    await analyzeCommute(locations.origin, locations.destination);
+    // Get locations either from arguments or config
+    const locations =
+      args.length >= 2
+        ? { origin: args[0], destination: args[1] }
+        : await getCommuteLocations();
+
+    // Determine which date to analyze
+    let analysisDate: DateOption = { date: new Date(), description: "Today" };
+
+    if (options.tomorrow) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      analysisDate = { date: tomorrow, description: "Tomorrow" };
+    } else if (options.nextMonday) {
+      analysisDate = {
+        date: getNextDayOfWeek("monday"),
+        description: "Next Monday",
+      };
+    } else if (options.nextTuesday) {
+      analysisDate = {
+        date: getNextDayOfWeek("tuesday"),
+        description: "Next Tuesday",
+      };
+    } else if (options.nextWednesday) {
+      analysisDate = {
+        date: getNextDayOfWeek("wednesday"),
+        description: "Next Wednesday",
+      };
+    } else if (options.nextThursday) {
+      analysisDate = {
+        date: getNextDayOfWeek("thursday"),
+        description: "Next Thursday",
+      };
+    } else if (options.nextFriday) {
+      analysisDate = {
+        date: getNextDayOfWeek("friday"),
+        description: "Next Friday",
+      };
+    } else if (options.nextSaturday) {
+      analysisDate = {
+        date: getNextDayOfWeek("saturday"),
+        description: "Next Saturday",
+      };
+    } else if (options.nextSunday) {
+      analysisDate = {
+        date: getNextDayOfWeek("sunday"),
+        description: "Next Sunday",
+      };
+    }
+
+    console.log(
+      chalk.bold.blue(
+        `Traffic Analysis for Your Commute - ${analysisDate.description}\n`,
+      ),
+    );
+
+    // Modify findBestTimes to accept a date parameter
+    await findBestTimes(
+      locations.origin,
+      locations.destination,
+      6,
+      10,
+      "Morning Commute (To Work)",
+      analysisDate.date,
+    );
+
+    await findBestTimes(
+      locations.destination,
+      locations.origin,
+      13,
+      19,
+      "Afternoon Commute (To Home)",
+      analysisDate.date,
+    );
   } catch (error) {
     console.error(chalk.red("Failed to run commute analysis:", error));
     process.exit(1);
