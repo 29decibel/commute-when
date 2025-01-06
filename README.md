@@ -17,36 +17,9 @@ export GOOGLE_MAPS_API_KEY=<your-api-key>
 ### For macOS:
 
 ```bash
-# Download the tar.gz file
-curl -L https://github.com/29decibel/commute-when/releases/download/v0.1.0/commute-when-mac.tar.gz -o commute-when-mac.tar.gz
-
-# Extract the binary
-tar -xzf commute-when-mac.tar.gz
-
-# Make it executable (if needed)
-chmod +x commute-when
-
-# Run it
-./commute-when
+npm i -g commute-when
 ```
 
-
-
-### For Linux:
-
-```bash
-# Download the tar.gz file
-curl -L https://github.com/29decibel/commute-when/releases/download/v0.1.0/commute-when-linux.tar.gz -o commute-when-linux.tar.gz
-
-# Extract the binary
-tar -xzf commute-when-linux.tar.gz
-
-# Make it executable (if needed)
-chmod +x commute-when
-
-# Run it
-./commute-when
-```
 
 ## Usage
 
@@ -76,5 +49,5 @@ bun install
 To run:
 
 ```bash
-bun index.ts
+bun src/index.ts
 ```

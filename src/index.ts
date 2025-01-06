@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import dotenv from "dotenv";
 import ora from "ora";
 import chalk from "chalk";

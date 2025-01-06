@@ -1,16 +1,32 @@
 {
-  "name": "@29decibel/commute-when",
-  "version": "0.1.2",
+  "name": "commute-when",
+  "version": "0.1.3",
   "license": "MIT",
   "exports": "./index.ts",
   "description": "Find the best time to leave for your commute",
   "module": "index.ts",
   "type": "module",
   "bin": {
-    "commute-when": "./index.ts"
+    "commute-when": "./dist/cli.js"
   },
   "scripts": {
-    "build": "bun build ./index.ts --compile --outfile ./bin/commute-when"
+    "build": "bun build ./src/index.ts --outfile ./dist/cli.js --target node",
+    "prepublishOnly": "bun run build"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "cli",
+    "commute",
+    "traffic",
+    "google-maps"
+  ],
+  "author": "29decibel",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/29decibel/commute-when"
   },
   "devDependencies": {
     "@types/bun": "latest"
