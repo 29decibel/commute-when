@@ -1,5 +1,7 @@
 # Commute when
 
+![commute time](screenshot.png)
+
 A dead simple CLI tool to help you decide when to leave for work.
 
 ## Pre-requisites
